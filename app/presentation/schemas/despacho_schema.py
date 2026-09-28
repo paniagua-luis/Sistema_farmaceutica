@@ -3,7 +3,6 @@ from pydantic import BaseModel
 
 
 class DespachoCreate(BaseModel):
-    codigo_despacho: str
     lote_id: int
     sucursal_id: int
     cantidad_despachada: int

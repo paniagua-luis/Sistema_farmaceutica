@@ -31,6 +31,8 @@ ROLE_PERMISSIONS = {
     },
     "personal_sucursal": {
         "despachos.gestionar",
+        "lotes.consultar",
+        "sucursales.consultar",
     },
     "proveedor": {
         "lotes.gestionar",
