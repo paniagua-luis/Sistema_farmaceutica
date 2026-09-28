@@ -12,27 +12,27 @@ from app.application.use_cases.trazabilidad.registrar_evento import Trazabilidad
 from app.presentation.schemas.lote_schema import LoteCreate, LoteResponse, LoteEstadoUpdate
 from app.presentation.dependencies import obtener_usuario_actual, requiere_permiso
 
-router = APIRouter(prefix="/lotes", tags=["Lotes"], dependencies=[Depends(requiere_permiso("lotes.gestionar"))])
+router = APIRouter(prefix="/lotes", tags=["Lotes"])
 
 
-@router.get("/", response_model=list[LoteResponse])
+@router.get("/", response_model=list[LoteResponse], dependencies=[Depends(requiere_permiso("lotes.consultar"))])
 def listar(db: Session = Depends(get_db)):
     return ListarLotes(SQLAlchemyLoteRepository(db)).listar()
 
 
-@router.get("/{lote_id}", response_model=LoteResponse)
+@router.get("/{lote_id}", response_model=LoteResponse, dependencies=[Depends(requiere_permiso("lotes.consultar"))])
 def obtener(lote_id: int, db: Session = Depends(get_db)):
     return ObtenerLote(SQLAlchemyLoteRepository(db)).obtener(lote_id)
 
 
-@router.post("/", response_model=LoteResponse, status_code=201)
+@router.post("/", response_model=LoteResponse, status_code=201, dependencies=[Depends(requiere_permiso("lotes.gestionar"))])
 def registrar_recepcion(datos: LoteCreate, db: Session = Depends(get_db), usuario=Depends(obtener_usuario_actual)):
     """Evento 1: recepcion de un nuevo lote de medicamentos."""
     trazabilidad = TrazabilidadService(SQLAlchemyTrazabilidadRepository(db))
     return RegistrarRecepcion(SQLAlchemyLoteRepository(db), trazabilidad).registrar_recepcion(datos.model_dump(), usuario.id)
 
 
-@router.patch("/{lote_id}/estado", response_model=LoteResponse)
+@router.patch("/{lote_id}/estado", response_model=LoteResponse, dependencies=[Depends(requiere_permiso("lotes.gestionar"))])
 def actualizar_estado(lote_id: int, datos: LoteEstadoUpdate, db: Session = Depends(get_db), usuario=Depends(obtener_usuario_actual)):
     trazabilidad = TrazabilidadService(SQLAlchemyTrazabilidadRepository(db))
     return ActualizarEstado(SQLAlchemyLoteRepository(db), trazabilidad).actualizar_estado(lote_id, datos.nuevo_estado, usuario.id)

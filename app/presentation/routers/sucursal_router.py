@@ -10,24 +10,24 @@ from app.application.use_cases.sucursal.eliminar_sucursal import SucursalService
 from app.presentation.schemas.sucursal_schema import SucursalCreate, SucursalResponse
 from app.presentation.dependencies import requiere_permiso
 
-router = APIRouter(prefix="/sucursales", tags=["Sucursales"], dependencies=[Depends(requiere_permiso("sucursales.gestionar"))])
+router = APIRouter(prefix="/sucursales", tags=["Sucursales"])
 
 
-@router.get("/", response_model=list[SucursalResponse])
+@router.get("/", response_model=list[SucursalResponse], dependencies=[Depends(requiere_permiso("sucursales.consultar"))])
 def listar(db: Session = Depends(get_db)):
     return ListarSucursales(SQLAlchemySucursalRepository(db)).listar()
 
 
-@router.get("/{sucursal_id}", response_model=SucursalResponse)
+@router.get("/{sucursal_id}", response_model=SucursalResponse, dependencies=[Depends(requiere_permiso("sucursales.consultar"))])
 def obtener(sucursal_id: int, db: Session = Depends(get_db)):
     return ObtenerSucursal(SQLAlchemySucursalRepository(db)).obtener(sucursal_id)
 
 
-@router.post("/", response_model=SucursalResponse, status_code=201)
+@router.post("/", response_model=SucursalResponse, status_code=201, dependencies=[Depends(requiere_permiso("sucursales.gestionar"))])
 def crear(datos: SucursalCreate, db: Session = Depends(get_db)):
     return CrearSucursal(SQLAlchemySucursalRepository(db)).crear(datos.model_dump())
 
 
-@router.delete("/{sucursal_id}")
+@router.delete("/{sucursal_id}", dependencies=[Depends(requiere_permiso("sucursales.gestionar"))])
 def eliminar(sucursal_id: int, db: Session = Depends(get_db)):
     return EliminarSucursal(SQLAlchemySucursalRepository(db)).eliminar(sucursal_id)

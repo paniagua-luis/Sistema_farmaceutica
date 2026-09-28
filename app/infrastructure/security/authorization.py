@@ -8,9 +8,13 @@ from app.infrastructure.models.usuario_model import UsuarioModel
 ROLE_PERMISSIONS = {
     "administrador": {
         "medicamentos.gestionar",
+        "medicamentos.consultar",
         "proveedores.gestionar",
+        "proveedores.consultar",
         "sucursales.gestionar",
+        "sucursales.consultar",
         "lotes.gestionar",
+        "lotes.consultar",
         "calidad.gestionar",
         "despachos.gestionar",
         "temperatura.gestionar",
@@ -19,11 +23,13 @@ ROLE_PERMISSIONS = {
     },
     "almacen": {
         "lotes.gestionar",
+        "lotes.consultar",
         "temperatura.gestionar",
         "trazabilidad.consultar",
         "reportes.consultar",
     },
     "personal_calidad": {
+        "lotes.consultar",
         "calidad.gestionar",
         "temperatura.gestionar",
         "trazabilidad.consultar",
@@ -36,6 +42,10 @@ ROLE_PERMISSIONS = {
     },
     "proveedor": {
         "lotes.gestionar",
+        "lotes.consultar",
+        "medicamentos.consultar",
+        "proveedores.consultar",
+        "sucursales.consultar",
     },
     "ente_regulador": {
         "trazabilidad.consultar",

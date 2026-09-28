@@ -10,24 +10,24 @@ from app.application.use_cases.proveedor.eliminar_proveedor import ProveedorServ
 from app.presentation.schemas.proveedor_schema import ProveedorCreate, ProveedorResponse
 from app.presentation.dependencies import requiere_permiso
 
-router = APIRouter(prefix="/proveedores", tags=["Proveedores"], dependencies=[Depends(requiere_permiso("proveedores.gestionar"))])
+router = APIRouter(prefix="/proveedores", tags=["Proveedores"])
 
 
-@router.get("/", response_model=list[ProveedorResponse])
+@router.get("/", response_model=list[ProveedorResponse], dependencies=[Depends(requiere_permiso("proveedores.consultar"))])
 def listar(db: Session = Depends(get_db)):
     return ListarProveedores(SQLAlchemyProveedorRepository(db)).listar()
 
 
-@router.get("/{proveedor_id}", response_model=ProveedorResponse)
+@router.get("/{proveedor_id}", response_model=ProveedorResponse, dependencies=[Depends(requiere_permiso("proveedores.consultar"))])
 def obtener(proveedor_id: int, db: Session = Depends(get_db)):
     return ObtenerProveedor(SQLAlchemyProveedorRepository(db)).obtener(proveedor_id)
 
 
-@router.post("/", response_model=ProveedorResponse, status_code=201)
+@router.post("/", response_model=ProveedorResponse, status_code=201, dependencies=[Depends(requiere_permiso("proveedores.gestionar"))])
 def crear(datos: ProveedorCreate, db: Session = Depends(get_db)):
     return CrearProveedor(SQLAlchemyProveedorRepository(db)).crear(datos.model_dump())
 
 
-@router.delete("/{proveedor_id}")
+@router.delete("/{proveedor_id}", dependencies=[Depends(requiere_permiso("proveedores.gestionar"))])
 def eliminar(proveedor_id: int, db: Session = Depends(get_db)):
     return EliminarProveedor(SQLAlchemyProveedorRepository(db)).eliminar(proveedor_id)
