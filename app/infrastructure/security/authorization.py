@@ -20,6 +20,7 @@ ROLE_PERMISSIONS = {
         "temperatura.gestionar",
         "trazabilidad.consultar",
         "reportes.consultar",
+        "usuarios.gestionar",
     },
     "almacen": {
         "lotes.gestionar",

@@ -17,6 +17,10 @@ class LoteModel(Base):
     fecha_vencimiento = Column(Date, nullable=False)
     estado_lote = Column(String(30), nullable=False, default="pendiente_verificacion")
 
-    medicamento = relationship("MedicamentoModel")
     proveedor = relationship("ProveedorModel")
     sucursal = relationship("SucursalModel")
+    productos = relationship(
+        "LoteProductoModel",
+        back_populates="lote",
+        cascade="all, delete-orphan",
+    )

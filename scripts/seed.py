@@ -13,6 +13,7 @@ from app.infrastructure.models.despacho_model import DespachoModel
 from app.infrastructure.models.monitoreo_temperatura_model import MonitoreoTemperaturaModel
 from app.infrastructure.models.reporte_model import ReporteModel
 from app.infrastructure.models.usuario_model import UsuarioModel
+from app.infrastructure.models.lote_producto_model import LoteProductoModel
 from scripts.factories import (
     despacho_data,
     inspeccion_data,
@@ -98,6 +99,15 @@ def seed(
         created["lotes"] += int(was_created)
 
     seed_lotes = session.query(LoteModel).filter(LoteModel.codigo_lote.like("SEED-LOTE-%")).order_by(LoteModel.id).all()
+    for lote in seed_lotes:
+        if not lote.productos:
+            lote.productos.append(
+                LoteProductoModel(
+                    medicamento_id=lote.medicamento_id,
+                    cantidad_recibida=lote.cantidad_recibida,
+                    cantidad_disponible=lote.cantidad_disponible,
+                )
+            )
     usuarios = session.query(UsuarioModel).order_by(UsuarioModel.id).all()
     if (inspecciones_count or despachos_count or lecturas_count or reportes_count) and not usuarios:
         raise RuntimeError("Se necesita al menos un usuario para generar datos relacionados")
@@ -130,6 +140,12 @@ def seed(
         )
         if was_created:
             lote.cantidad_disponible -= despacho.cantidad_despachada
+            producto = next(
+                producto
+                for producto in lote.productos
+                if producto.medicamento_id == lote.medicamento_id
+            )
+            producto.cantidad_disponible -= despacho.cantidad_despachada
         created["despachos"] += int(was_created)
 
     for index, lote in enumerate(seed_lotes[:lecturas_count], start=1):

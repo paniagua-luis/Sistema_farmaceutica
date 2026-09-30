@@ -11,7 +11,11 @@ from app.application.use_cases.despacho.confirmar_recepcion import DespachoServi
 from app.application.use_cases.lote.obtener_lote import LoteService as ObtenerLote
 from app.application.use_cases.lote.descontar_stock import LoteService as DescontarStock
 from app.application.use_cases.trazabilidad.registrar_evento import TrazabilidadService
-from app.presentation.schemas.despacho_schema import DespachoCreate, DespachoResponse
+from app.presentation.schemas.despacho_schema import (
+    DespachoCreate,
+    DespachoMultipleCreate,
+    DespachoResponse,
+)
 from app.presentation.dependencies import obtener_usuario_actual, requiere_permiso
 
 router = APIRouter(prefix="/despachos", tags=["Distribucion y Despacho"], dependencies=[Depends(requiere_permiso("despachos.gestionar"))])
@@ -27,6 +31,23 @@ def registrar_despacho(datos: DespachoCreate, db: Session = Depends(get_db), usu
     """Eventos 3, 4 y 14: solicitud de abastecimiento y despacho a la sucursal."""
     trazabilidad = TrazabilidadService(SQLAlchemyTrazabilidadRepository(db))
     return RegistrarDespacho(SQLAlchemyDespachoRepository(db), ObtenerLote(SQLAlchemyLoteRepository(db)), DescontarStock(SQLAlchemyLoteRepository(db), trazabilidad), trazabilidad).registrar_despacho(datos.model_dump(), usuario.id)
+
+
+@router.post("/multiple", response_model=list[DespachoResponse], status_code=201)
+def registrar_despachos(
+    datos: DespachoMultipleCreate,
+    db: Session = Depends(get_db),
+    usuario=Depends(obtener_usuario_actual),
+):
+    """Despacha varios medicamentos/lotes hacia una misma sucursal."""
+    trazabilidad = TrazabilidadService(SQLAlchemyTrazabilidadRepository(db))
+    lote_repository = SQLAlchemyLoteRepository(db)
+    return RegistrarDespacho(
+        SQLAlchemyDespachoRepository(db),
+        ObtenerLote(lote_repository),
+        DescontarStock(lote_repository, trazabilidad),
+        trazabilidad,
+    ).registrar_despachos(datos.model_dump(), usuario.id)
 
 
 @router.patch("/{despacho_id}/confirmar", response_model=DespachoResponse)

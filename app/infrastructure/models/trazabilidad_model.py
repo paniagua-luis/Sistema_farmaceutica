@@ -10,4 +10,4 @@ class TrazabilidadModel(Base):
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=True)
     tipo_evento = Column(String(80), nullable=False)
     descripcion = Column(String(500), nullable=False)
-    fecha = Column(DateTime(timezone=True), server_default=func.now())
+    fecha = Column(DateTime(timezone=False), server_default=func.now())

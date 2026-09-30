@@ -13,7 +13,9 @@ router = APIRouter(prefix="/auth", tags=["Autenticacion"])
 
 @router.post("/registro", response_model=UsuarioResponse, status_code=201)
 def registrar(datos: UsuarioCreate, db: Session = Depends(get_db)):
-    usuario = RegistrarUsuario(SQLAlchemyUsuarioRepository(db)).registrar(datos.username, datos.password, datos.rol)
+    repository = SQLAlchemyUsuarioRepository(db)
+    rol = "administrador" if repository.count() == 0 else "personal_sucursal"
+    usuario = RegistrarUsuario(repository).registrar(datos.username, datos.password, rol)
     return usuario
 
 

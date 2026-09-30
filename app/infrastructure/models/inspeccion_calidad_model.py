@@ -10,4 +10,4 @@ class InspeccionCalidadModel(Base):
     usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
     resultado = Column(String(20), nullable=False)
     observaciones = Column(String(500), nullable=True)
-    fecha_inspeccion = Column(DateTime(timezone=True), server_default=func.now())
+    fecha_inspeccion = Column(DateTime(timezone=False), server_default=func.now())

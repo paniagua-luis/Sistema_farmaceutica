@@ -12,4 +12,4 @@ class MedicamentoModel(Base):
     temperatura_minima = Column(Float, nullable=False)
     temperatura_maxima = Column(Float, nullable=False)
     dias_alerta_vencimiento = Column(Integer, nullable=False, default=30)
-    fecha_actualizacion = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    fecha_actualizacion = Column(DateTime(timezone=False), server_default=func.now(), onupdate=func.now())

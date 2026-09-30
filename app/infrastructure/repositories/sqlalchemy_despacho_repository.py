@@ -11,7 +11,8 @@ class SQLAlchemyDespachoRepository(IDespachoRepository):
     def _a_entidad(self, d: DespachoModel) -> Despacho:
         return Despacho(
             id=d.id, codigo_despacho=d.codigo_despacho, lote_id=d.lote_id, sucursal_id=d.sucursal_id,
-            cantidad_despachada=d.cantidad_despachada, estado_despacho=d.estado_despacho,
+            medicamento_id=d.medicamento_id, cantidad_despachada=d.cantidad_despachada,
+            estado_despacho=d.estado_despacho,
             fecha_despacho=d.fecha_despacho, fecha_recepcion=d.fecha_recepcion,
         )
 
@@ -27,13 +28,30 @@ class SQLAlchemyDespachoRepository(IDespachoRepository):
 
     def create(self, despacho: Despacho):
         d = DespachoModel(
-            codigo_despacho=despacho.codigo_despacho, lote_id=despacho.lote_id, sucursal_id=despacho.sucursal_id,
+            codigo_despacho=despacho.codigo_despacho, lote_id=despacho.lote_id,
+            medicamento_id=despacho.medicamento_id, sucursal_id=despacho.sucursal_id,
             cantidad_despachada=despacho.cantidad_despachada, estado_despacho=despacho.estado_despacho,
         )
         self.db.add(d)
         self.db.commit()
         self.db.refresh(d)
         return self._a_entidad(d)
+
+    def create_many_pending(self, despachos: list[Despacho]) -> list[Despacho]:
+        modelos = [
+            DespachoModel(
+                codigo_despacho=despacho.codigo_despacho,
+                lote_id=despacho.lote_id,
+                medicamento_id=despacho.medicamento_id,
+                sucursal_id=despacho.sucursal_id,
+                cantidad_despachada=despacho.cantidad_despachada,
+                estado_despacho=despacho.estado_despacho,
+            )
+            for despacho in despachos
+        ]
+        self.db.add_all(modelos)
+        self.db.flush()
+        return [self._a_entidad(modelo) for modelo in modelos]
 
     def update(self, despacho: Despacho):
         d = self.db.query(DespachoModel).filter(DespachoModel.id == despacho.id).first()

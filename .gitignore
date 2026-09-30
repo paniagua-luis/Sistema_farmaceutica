@@ -2,6 +2,8 @@
 venv/
 .venv/
 env/
+node_modules/
+dist/
 
 # Variables de entorno y secretos
 .env

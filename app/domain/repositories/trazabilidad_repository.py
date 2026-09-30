@@ -11,3 +11,6 @@ class ITrazabilidadRepository(ABC):
 
     @abstractmethod
     def create(self, evento: Trazabilidad) -> Trazabilidad: ...
+
+    @abstractmethod
+    def create_many(self, eventos: list[Trazabilidad]) -> list[Trazabilidad]: ...

@@ -11,4 +11,4 @@ class ReporteModel(Base):
     tipo_reporte = Column(String(80), nullable=False)
     destinatario = Column(String(150), nullable=False)
     contenido = Column(String(2000), nullable=False)
-    fecha = Column(DateTime(timezone=True), server_default=func.now())
+    fecha = Column(DateTime(timezone=False), server_default=func.now())

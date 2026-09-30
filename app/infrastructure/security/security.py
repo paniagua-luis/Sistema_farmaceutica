@@ -1,6 +1,7 @@
 import os
 import bcrypt
-from datetime import datetime, timedelta
+import time
+from datetime import timedelta
 from jose import jwt, JWTError
 
 SECRET_KEY = os.getenv("SECRET_KEY", "clave-de-desarrollo-cambiar-en-produccion")
@@ -18,7 +19,7 @@ def verificar_password(password: str, password_hash: str) -> bool:
 
 def crear_token(data: dict) -> str:
     to_encode = data.copy()
-    expira = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expira = int(time.time()) + int(timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES).total_seconds())
     to_encode.update({"exp": expira})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 

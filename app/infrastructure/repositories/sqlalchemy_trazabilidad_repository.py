@@ -29,3 +29,15 @@ class SQLAlchemyTrazabilidadRepository(ITrazabilidadRepository):
         self.db.commit()
         self.db.refresh(t)
         return self._a_entidad(t)
+
+    def create_many(self, eventos: list[Trazabilidad]):
+        modelos = [
+            TrazabilidadModel(
+                lote_id=evento.lote_id, usuario_id=evento.usuario_id,
+                tipo_evento=evento.tipo_evento, descripcion=evento.descripcion,
+            )
+            for evento in eventos
+        ]
+        self.db.add_all(modelos)
+        self.db.commit()
+        return [self._a_entidad(modelo) for modelo in modelos]

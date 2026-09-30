@@ -11,4 +11,4 @@ class MonitoreoTemperaturaModel(Base):
     ubicacion_almacen = Column(String(150), nullable=False)
     temperatura_registrada = Column(Float, nullable=False)
     estado_lectura = Column(String(30), nullable=False, default="normal")
-    fecha_hora = Column(DateTime(timezone=True), server_default=func.now())
+    fecha_hora = Column(DateTime(timezone=False), server_default=func.now())

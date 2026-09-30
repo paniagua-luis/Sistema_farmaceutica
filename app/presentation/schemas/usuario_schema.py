@@ -4,7 +4,10 @@ from pydantic import BaseModel
 class UsuarioCreate(BaseModel):
     username: str
     password: str
-    rol: str = "operador"
+
+
+class UsuarioRolUpdate(BaseModel):
+    rol: str
 
 
 class UsuarioResponse(BaseModel):

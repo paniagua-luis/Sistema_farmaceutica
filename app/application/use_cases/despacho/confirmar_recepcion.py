@@ -16,7 +16,7 @@ class DespachoService:
         if not despacho:
             raise HTTPException(status_code=404, detail="Despacho no encontrado")
         despacho.estado_despacho = "recibido"
-        despacho.fecha_recepcion = datetime.utcnow()
+        despacho.fecha_recepcion = datetime.now()
         despacho = self.repository.update(despacho)
         self.trazabilidad_service.registrar_evento(
             despacho.lote_id, "confirmacion_recepcion", f"Despacho {despacho.codigo_despacho} confirmado por la sucursal", usuario_id,

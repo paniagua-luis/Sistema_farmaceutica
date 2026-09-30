@@ -9,6 +9,7 @@ class Despacho:
     lote_id: int
     sucursal_id: int
     cantidad_despachada: int
+    medicamento_id: Optional[int] = None
     estado_despacho: str = "en_transito"
     id: Optional[int] = None
     fecha_despacho: Optional[datetime] = None

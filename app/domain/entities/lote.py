@@ -4,6 +4,14 @@ from typing import Optional
 
 
 @dataclass
+class LoteProducto:
+    medicamento_id: int
+    cantidad_recibida: int
+    cantidad_disponible: int
+    medicamento: str = ""
+
+
+@dataclass
 class Lote:
     codigo_lote: str
     medicamento_id: int
@@ -15,3 +23,4 @@ class Lote:
     cantidad_disponible: int = 0
     estado_lote: str = "pendiente_verificacion"
     id: Optional[int] = None
+    productos: list[LoteProducto] | None = None
